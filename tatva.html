@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TATVA — Protein has always been Indian.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   TATVA GLASS — Design System
+   Palette: Deep forest dark + botanical mesh gradients.
+   Every surface is frosted glass (backdrop-filter: blur).
+   Von Restorff: ONE electric saffron element per section —
+   the only fully opaque, fully saturated thing you see.
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* Background world */
+  --bg:        #060D06;   /* near-black botanical */
+  --bg-2:      #0A1A09;
+  --mesh-1:    #0F2E0C;   /* dark forest green blob */
+  --mesh-2:    #1A1005;   /* dark amber blob */
+  --mesh-3:    #071508;   /* deepest green */
+
+  /* Glass surfaces */
+  --glass:          rgba(255,255,255,0.04);
+  --glass-hover:    rgba(255,255,255,0.07);
+  --glass-strong:   rgba(255,255,255,0.09);
+  --glass-border:   rgba(255,255,255,0.09);
+  --glass-border-h: rgba(255,255,255,0.18);
+  --glass-shadow:   0 8px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.06) inset;
+  --glass-shadow-lg:0 24px 60px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.07) inset;
+
+  /* Text on dark */
+  --t-1:  rgba(255,255,255,0.92);
+  --t-2:  rgba(255,255,255,0.55);
+  --t-3:  rgba(255,255,255,0.28);
+  --t-4:  rgba(255,255,255,0.12);
+
+  /* ★ VON RESTORFF — ONE per section */
+  --von:      #F7C948;
+  --von-d:    #D4A820;
+  --von-glow: rgba(247,201,72,0.22);
+  --von-pale: rgba(247,201,72,0.08);
+
+  /* Flavor accents (labels only) */
+  --chili:  #E05A3A;
+  --leaf:   #6AAE32;
+  --sky:    #4A9FD4;
+  --amber:  #E8991A;
+
+  /* Type */
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'Outfit', system-ui, sans-serif;
+
+  /* Layout */
+  --pad-x: clamp(1.25rem, 5vw, 4rem);
+  --pad-y: clamp(4rem, 8vw, 8rem);
+  --max:   1160px;
+  --r:     16px;   /* glass card radius */
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; font-size:16px; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--t-1);
+  overflow-x: hidden;
+  cursor: none;
+  min-height: 100vh;
+}
+
+/* ── ANIMATED MESH BACKGROUND ─────────────────── */
+.mesh-bg {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+}
+.blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(100px); opacity: 0.55;
+  animation: blobDrift linear infinite;
+}
+.b1 { width:700px;height:700px;background:var(--mesh-1);top:-15%;left:-10%;animation-duration:28s; }
+.b2 { width:500px;height:500px;background:var(--mesh-2);bottom:-10%;right:-5%;animation-duration:22s;animation-delay:-8s; }
+.b3 { width:400px;height:400px;background:rgba(247,201,72,0.07);top:40%;left:30%;animation-duration:35s;animation-delay:-14s; }
+.b4 { width:350px;height:350px;background:var(--mesh-3);bottom:20%;left:15%;animation-duration:25s;animation-delay:-5s; }
+@keyframes blobDrift {
+  0%,100% { transform:translate(0,0) scale(1); }
+  33%     { transform:translate(40px,-30px) scale(1.05); }
+  66%     { transform:translate(-20px,40px) scale(0.97); }
+}
+
+/* Grain */
+.grain {
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.6;
+}
+
+/* Page wrapper above backgrounds */
+.page { position:relative;z-index:2; }
+
+/* ── GLASS MIXIN (used everywhere) ─────────────── */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--r);
+}
+
+/* ── CUSTOM CURSOR ──────────────────────────────── */
+#cur {
+  position:fixed;top:0;left:0;z-index:9999;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--von);pointer-events:none;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+  mix-blend-mode:screen;
+}
+#cur-ring {
+  position:fixed;top:0;left:0;z-index:9998;
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid rgba(255,255,255,0.2);
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  transition:transform .45s cubic-bezier(.23,1,.32,1);
+}
+@media (hover:none) { #cur,#cur-ring { display:none; } body { cursor:auto; } }
+
+/* ── NAV ────────────────────────────────────────── */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  padding:1rem var(--pad-x);
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .4s,border-color .4s,backdrop-filter .4s;
+  border-bottom:1px solid transparent;
+}
+nav.stuck {
+  background:rgba(6,13,6,0.7);
+  border-color:var(--glass-border);
+  backdrop-filter:blur(24px) saturate(1.6);
+  -webkit-backdrop-filter:blur(24px) saturate(1.6);
+}
+
+.logo {
+  font-family:var(--serif);
+  font-size:1.55rem;font-weight:700;letter-spacing:.1em;
+  color:var(--t-1);text-decoration:none;
+  display:flex;flex-direction:column;
+}
+.logo-sub {
+  font-family:var(--sans);font-size:.52rem;font-weight:300;
+  letter-spacing:.35em;text-transform:uppercase;
+  color:var(--t-3);margin-top:-2px;
+}
+
+.nav-links {
+  display:flex;align-items:center;gap:2rem;
+}
+.nav-link {
+  font-size:.8rem;font-weight:400;color:var(--t-2);
+  text-decoration:none;letter-spacing:.03em;
+  transition:color .2s;
+}
+.nav-link:hover { color:var(--t-1); }
+
+/* ★ Von Restorff nav CTA */
+.nav-cta {
+  background:var(--von);color:#0A0800;
+  border:none;cursor:none;
+  padding:.6rem 1.4rem;
+  font-family:var(--sans);font-size:.78rem;font-weight:700;
+  letter-spacing:.05em;border-radius:6px;
+  transition:background .2s,transform .2s,box-shadow .2s;
+  box-shadow:0 0 0 0 var(--von-glow);
+}
+.nav-cta:hover {
+  background:var(--von-d);transform:translateY(-1px);
+  box-shadow:0 0 20px var(--von-glow);
+}
+
+/* Hamburger */
+.hamburger {
+  display:none;flex-direction:column;gap:5px;
+  cursor:none;padding:4px;
+  background:none;border:none;
+}
+.hamburger span {
+  display:block;width:22px;height:1.5px;
+  background:var(--t-2);border-radius:2px;
+  transition:transform .3s,opacity .3s;
+}
+.hamburger.open span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+
+/* Mobile menu drawer */
+.mobile-menu {
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:490;
+  background:rgba(6,13,6,0.95);
+  backdrop-filter:blur(30px);
+  -webkit-backdrop-filter:blur(30px);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:2rem;
+  opacity:0;pointer-events:none;
+  transition:opacity .35s ease;
+}
+.mobile-menu.open { opacity:1;pointer-events:all; }
+.mobile-menu .m-link {
+  font-family:var(--serif);font-size:2.2rem;font-weight:300;
+  color:var(--t-1);text-decoration:none;letter-spacing:.05em;
+  transition:color .2s;
+}
+.mobile-menu .m-link:hover { color:var(--von); }
+.mobile-menu .m-cta {
+  background:var(--von);color:#0A0800;border:none;cursor:none;
+  padding:.9rem 2.5rem;font-family:var(--sans);font-size:.9rem;font-weight:700;
+  letter-spacing:.05em;border-radius:8px;margin-top:1rem;
+}
+
+/* ── SECTION UTILS ──────────────────────────────── */
+.wrap { max-width:var(--max); margin:0 auto; padding:0 var(--pad-x); }
+.section-kicker {
+  display:inline-flex;align-items:center;gap:.65rem;
+  font-size:.6rem;font-weight:600;
+  letter-spacing:.28em;text-transform:uppercase;
+  color:var(--t-3);margin-bottom:1.1rem;
+}
+.kicker-line { width:18px;height:1px;background:rgba(255,255,255,0.2); }
+
+.section-h2 {
+  font-family:var(--serif);
+  font-size:clamp(2rem,4.5vw,3.5rem);
+  font-weight:300;line-height:1.08;
+  color:var(--t-1);margin-bottom:1rem;
+}
+
+/* ★ Von Restorff highlight on text */
+.von-mark {
+  position:relative;display:inline-block;
+  font-weight:700;font-style:italic;color:var(--von);
+}
+.von-mark::after {
+  content:'';position:absolute;
+  left:-3px;right:-3px;bottom:3px;
+  height:8px;background:rgba(247,201,72,.15);
+  z-index:-1;
+  border-radius:2px;
+}
+
+/* Scroll reveal */
+.rv { opacity:0;transform:translateY(30px);
+  transition:opacity .85s ease,transform .85s ease; }
+.rv.in { opacity:1;transform:translateY(0); }
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}
+.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}
+
+/* ═══════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════ */
+.hero {
+  min-height:100vh;display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;gap:3rem;
+  padding:clamp(5rem,10vw,8rem) var(--pad-x) clamp(4rem,6vw,6rem);
+}
+
+.hero-kicker {
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-size:.62rem;font-weight:500;
+  letter-spacing:.24em;text-transform:uppercase;
+  color:var(--t-3);margin-bottom:1.75rem;
+  opacity:0;animation:slideUp .7s .15s ease forwards;
+}
+.hero-h1 {
+  font-family:var(--serif);
+  font-size:clamp(3rem,7vw,6.5rem);
+  font-weight:300;line-height:1.03;letter-spacing:-.01em;
+  color:var(--t-1);margin-bottom:1.5rem;
+  opacity:0;animation:slideUp .85s .3s ease forwards;
+}
+.hero-sub {
+  font-size:1rem;font-weight:300;
+  color:var(--t-2);line-height:1.9;max-width:430px;
+  margin-bottom:2.25rem;
+  opacity:0;animation:slideUp .85s .45s ease forwards;
+}
+
+/* Live social-proof bar */
+.live-bar {
+  display:inline-flex;align-items:center;gap:.75rem;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  padding:.55rem 1.1rem;border-radius:100px;
+  margin-bottom:1.5rem;
+  font-size:.76rem;color:var(--t-2);
+  opacity:0;animation:slideUp .85s .6s ease forwards;
+}
+.live-dot {
+  width:7px;height:7px;border-radius:50%;
+  background:var(--leaf);flex-shrink:0;
+  animation:livePulse 2.2s ease-in-out infinite;
+}
+@keyframes livePulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(106,174,50,.5);}
+  50%{box-shadow:0 0 0 6px rgba(106,174,50,0);}
+}
+.live-bar strong { color:var(--t-1);font-weight:600; }
+
+/* Waitlist form */
+.wl-form {
+  display:flex;max-width:470px;
+  border-radius:10px;overflow:hidden;
+  border:1px solid var(--glass-border);
+  box-shadow:var(--glass-shadow);
+  opacity:0;animation:slideUp .85s .75s ease forwards;
+}
+.wl-input {
+  flex:1;background:rgba(255,255,255,.05);
+  border:none;color:var(--t-1);
+  font-family:var(--sans);font-size:.88rem;
+  padding:.9rem 1.2rem;outline:none;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  transition:background .2s;
+}
+.wl-input::placeholder{color:var(--t-3);}
+.wl-input:focus{background:rgba(255,255,255,.08);}
+
+/* ★ Von Restorff hero button */
+.wl-btn {
+  background:var(--von);color:#0A0800;
+  border:none;cursor:none;
+  padding:.9rem 1.6rem;
+  font-family:var(--sans);font-size:.82rem;font-weight:700;
+  letter-spacing:.04em;white-space:nowrap;
+  transition:background .2s,box-shadow .2s;
+  position:relative;overflow:hidden;
+}
+.wl-btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.3) 50%,transparent 70%);
+  transform:translateX(-100%);transition:transform .6s;
+}
+.wl-btn:hover{background:var(--von-d);box-shadow:0 0 24px var(--von-glow);}
+.wl-btn:hover::after{transform:translateX(100%);}
+
+.hero-micro {
+  margin-top:.9rem;font-size:.7rem;color:var(--t-3);
+  letter-spacing:.04em;
+  opacity:0;animation:slideUp .85s .9s ease forwards;
+}
+
+/* ── 3D PACK ────────────────────────────────────── */
+.hero-right {
+  display:flex;align-items:center;justify-content:center;
+  position:relative;min-height:460px;
+}
+.scene {
+  perspective:1000px;
+  width:250px;height:340px;
+  opacity:0;animation:fadeIn 1.1s .7s ease forwards;
+  position:relative;
+}
+.pack-3d {
+  width:100%;height:100%;
+  transform-style:preserve-3d;position:relative;
+  animation:packFloat 7s ease-in-out infinite;
+}
+@keyframes packFloat{
+  0%,100%{transform:translateY(0) rotateX(7deg) rotateY(-22deg) rotateZ(-1deg);}
+  50%{transform:translateY(-18px) rotateX(8deg) rotateY(-18deg) rotateZ(-1deg);}
+}
+.face{position:absolute;backface-visibility:hidden;}
+
+/* FRONT FACE */
+.face-front{
+  width:250px;height:340px;
+  transform:translateZ(28px);
+  border-radius:12px;
+  /* GLASS pack front */
+  background:linear-gradient(145deg,
+    rgba(20,50,12,0.85) 0%,
+    rgba(10,26,8,0.92) 100%);
+  border:1px solid rgba(247,201,72,.3);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  box-shadow:
+    0 40px 80px rgba(0,0,0,.6),
+    0 0 0 .5px rgba(247,201,72,.15),
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 0 60px rgba(247,201,72,.03);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2rem 1.5rem;gap:.25rem;
+  overflow:hidden;
+}
+/* glass sheen on pack */
+.face-front::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:45%;
+  background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,transparent 100%);
+  border-radius:12px 12px 0 0;pointer-events:none;
+}
+.face-front::after{
+  content:'';position:absolute;
+  bottom:-30px;right:-30px;
+  width:140px;height:140px;border-radius:50%;
+  border:1px solid rgba(247,201,72,.07);
+  box-shadow:0 0 0 20px rgba(247,201,72,.03),0 0 0 45px rgba(247,201,72,.015);
+  pointer-events:none;
+}
+.pack-accent-bar{
+  position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(to bottom,var(--von),rgba(247,201,72,.2));
+  border-radius:12px 0 0 12px;
+}
+.pack-tag{font-size:.48rem;letter-spacing:.38em;text-transform:uppercase;
+  color:rgba(247,201,72,.35);font-family:var(--sans);font-weight:300;}
+.pack-name-big{
+  font-family:var(--serif);font-size:2.5rem;font-weight:700;
+  letter-spacing:.14em;color:var(--von);line-height:1;
+  text-shadow:0 0 30px rgba(247,201,72,.35);
+}
+.pack-deva{font-size:.62rem;letter-spacing:.22em;
+  color:rgba(247,201,72,.35);font-family:var(--sans);}
+.pack-emoji{font-size:1.5rem;margin:.6rem 0 .3rem;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));}
+.pack-flavor{font-family:var(--serif);font-size:1rem;
+  font-style:italic;font-weight:400;color:rgba(210,230,190,.9);
+  text-align:center;line-height:1.35;}
+
+/* ★ Von Restorff badge on the pack */
+.pack-badge{
+  background:var(--von);color:#0A0800;
+  font-size:.54rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;padding:3px 12px;
+  border-radius:100px;margin-top:.7rem;
+}
+.pack-wt{font-size:.5rem;letter-spacing:.18em;
+  color:rgba(247,201,72,.25);margin-top:.3rem;font-weight:300;}
+
+/* SIDE FACE */
+.face-side{
+  width:56px;height:340px;
+  transform:rotateY(90deg) translateZ(222px);
+  background:linear-gradient(to right,rgba(8,20,6,.9),rgba(10,26,8,.8));
+  border:1px solid rgba(247,201,72,.1);
+  border-radius:0 4px 4px 0;
+  display:flex;align-items:center;justify-content:center;
+}
+.face-side-txt{
+  writing-mode:vertical-rl;
+  font-size:.44rem;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(247,201,72,.2);font-family:var(--sans);font-weight:300;
+}
+/* TOP FACE */
+.face-top{
+  width:250px;height:56px;
+  transform:rotateX(90deg) translateZ(-284px);
+  background:rgba(20,50,12,.7);
+  border:1px solid rgba(247,201,72,.08);
+  border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+}
+.face-top-txt{
+  font-family:var(--serif);font-size:.75rem;letter-spacing:.3em;
+  color:rgba(247,201,72,.35);text-transform:uppercase;
+}
+/* ground shadow */
+.pack-ground{
+  position:absolute;bottom:-55px;left:50%;
+  transform:translateX(-50%);
+  width:180px;height:28px;
+  background:radial-gradient(ellipse,rgba(247,201,72,.12) 0%,transparent 70%);
+  filter:blur(8px);
+}
+/* Orbiting spices */
+.orbit{
+  position:absolute;inset:-70px;pointer-events:none;
+  animation:orb 32s linear infinite;
+}
+@keyframes orb{to{transform:rotate(360deg);}}
+.orb-dot{
+  position:absolute;width:42px;height:42px;border-radius:50%;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;box-shadow:var(--glass-shadow);
+  animation:orbCtr 32s linear infinite;
+}
+@keyframes orbCtr{to{transform:rotate(-360deg);}}
+
+/* scroll cue */
+.scroll-cue{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  opacity:0;animation:fadeIn 1s 2s ease forwards;
+}
+.scroll-cue span{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--t-3);}
+.scroll-line{
+  width:1px;height:32px;
+  background:linear-gradient(to bottom,var(--t-3),transparent);
+  animation:scrollDrop 1.8s ease-in-out infinite;
+}
+@keyframes scrollDrop{
+  0%{transform:scaleY(0);transform-origin:top;opacity:1;}
+  50%{transform:scaleY(1);transform-origin:top;opacity:1;}
+  100%{transform:scaleY(1);transform-origin:bottom;opacity:0;}
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION 1 — THE PROBLEM
+   ═══════════════════════════════════════════════ */
+.problem-section{
+  padding:var(--pad-y) var(--pad-x);
+  position:relative;
+}
+.problem-section::before{
+  content:'';position:absolute;
+  top:0;left:50%;transform:translateX(-50%);
+  width:80%;height:1px;
+  background:linear-gradient(to right,transparent,var(--glass-border),transparent);
+}
+
+.problem-grid{
+  max-width:var(--max);margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;align-items:start;
+}
+.problem-body{
+  font-size:.95rem;font-weight:300;color:var(--t-2);
+  line-height:1.9;margin-bottom:2rem;max-width:420px;
+}
+.problem-body strong{color:var(--t-1);font-weight:600;}
+
+/* ★ Von Restorff stat */
+.vr-stat-block{
+  display:inline-flex;flex-direction:column;
+  margin-top:.5rem;
+}
+.vr-number{
+  font-family:var(--serif);font-size:5rem;font-weight:700;
+  color:var(--t-1);line-height:1;
+  position:relative;display:inline-block;
+}
+.vr-number::before{
+  content:'';position:absolute;
+  left:-6px;right:-6px;bottom:8px;height:14px;
+  background:var(--von);opacity:.85;z-index:-1;
+  transform:skewX(-2deg);border-radius:2px;
+}
+.vr-label{font-size:.78rem;color:var(--t-3);font-weight:400;
+  letter-spacing:.04em;margin-top:.4rem;max-width:240px;line-height:1.6;}
+
+/* Glass compare cards */
+.compare-list{display:flex;flex-direction:column;gap:.75rem;}
+.cmp{
+  display:flex;gap:1rem;align-items:flex-start;
+  padding:1.1rem 1.25rem;border-radius:12px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:var(--glass-shadow);
+  transition:background .3s,border-color .3s,transform .3s;
+  position:relative;overflow:hidden;
+}
+.cmp:hover{background:var(--glass-hover);border-color:var(--glass-border-h);transform:translateX(4px);}
+/* top reflection line */
+.cmp::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.1),transparent);
+}
+.cmp.bad::after{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--chili);border-radius:2px;}
+.cmp.good::after{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--leaf);border-radius:2px;}
+.cmp-tag{
+  font-size:.55rem;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;padding:2px 9px;border-radius:100px;
+  flex-shrink:0;margin-top:1px;
+}
+.cmp-tag.bad{background:rgba(224,90,58,.12);color:var(--chili);}
+.cmp-tag.good{background:rgba(106,174,50,.12);color:var(--leaf);}
+.cmp-text{font-size:.83rem;color:var(--t-2);line-height:1.65;}
+.cmp-text em{color:var(--t-3);font-style:normal;font-size:.78rem;}
+
+/* ═══════════════════════════════════════════════
+   SECTION 2 — HOW IT'S DIFFERENT (new)
+   ═══════════════════════════════════════════════ */
+.diff-section{
+  padding:var(--pad-y) var(--pad-x);
+  position:relative;
+}
+
+.diff-grid{
+  max-width:var(--max);margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  border-radius:16px;overflow:hidden;
+  border:1px solid var(--glass-border);
+  box-shadow:var(--glass-shadow-lg);
+}
+.diff-card{
+  padding:2.25rem 2rem;
+  background:var(--glass);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;
+  transition:background .4s;
+}
+.diff-card:hover{background:var(--glass-hover);}
+/* top sheen */
+.diff-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.1),transparent);
+}
+.diff-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(255,255,255,.05);border:1px solid var(--glass-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;margin-bottom:1.25rem;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.diff-title{
+  font-family:var(--serif);font-size:1.2rem;font-weight:600;
+  color:var(--t-1);margin-bottom:.6rem;
+}
+.diff-desc{font-size:.82rem;color:var(--t-2);line-height:1.8;}
+
+/* ★ Von Restorff: center card gets the yellow treatment */
+.diff-card.featured{
+  background:var(--von-pale);
+  border-left:1px solid rgba(247,201,72,.15);
+  border-right:1px solid rgba(247,201,72,.15);
+}
+.diff-card.featured .diff-icon{
+  background:rgba(247,201,72,.12);border-color:rgba(247,201,72,.2);
+}
+.diff-card.featured .diff-title{ color:var(--von); }
+
+/* ═══════════════════════════════════════════════
+   SECTION 3 — PRODUCTS
+   ═══════════════════════════════════════════════ */
+.products-section{
+  padding:var(--pad-y) var(--pad-x);
+}
+.products-header{
+  max-width:var(--max);margin:0 auto 3rem;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  flex-wrap:wrap;gap:1.5rem;
+}
+.products-note{
+  font-size:.82rem;color:var(--t-3);
+  line-height:1.7;max-width:260px;text-align:right;
+}
+
+.products-grid{
+  max-width:var(--max);margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+}
+.prod{
+  border-radius:14px;padding:1.75rem 1.5rem 1.5rem;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:var(--glass-shadow);
+  display:flex;flex-direction:column;
+  cursor:none;position:relative;overflow:hidden;
+  transition:transform .4s cubic-bezier(.23,1,.32,1),
+              background .3s,border-color .3s,box-shadow .4s;
+}
+.prod:hover{
+  transform:translateY(-10px) scale(1.02);
+  background:var(--glass-hover);border-color:var(--glass-border-h);
+  box-shadow:var(--glass-shadow-lg),0 0 0 1px rgba(255,255,255,.05);
+}
+/* glass top sheen */
+.prod::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.05) 0%,transparent 100%);
+  border-radius:14px 14px 0 0;pointer-events:none;
+}
+/* ★ Von Restorff: first prod gets outlined in von */
+.prod.featured{
+  border-color:rgba(247,201,72,.3);
+  box-shadow:var(--glass-shadow),0 0 0 1px rgba(247,201,72,.1),0 0 40px rgba(247,201,72,.06);
+}
+.prod.featured::after{
+  content:'MOST WANTED';
+  position:absolute;top:1rem;right:1rem;
+  font-size:.5rem;font-weight:700;letter-spacing:.15em;
+  background:var(--von);color:#0A0800;padding:2px 8px;border-radius:100px;
+}
+
+.prod-emoji{
+  font-size:2rem;margin-bottom:1.1rem;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.3));
+  transition:transform .4s ease;display:block;
+}
+.prod:hover .prod-emoji{transform:scale(1.15) rotate(-5deg);}
+.prod-name{
+  font-family:var(--serif);font-size:1.1rem;font-weight:600;
+  color:var(--t-1);line-height:1.3;margin-bottom:.5rem;
+}
+.prod-desc{
+  font-size:.78rem;color:var(--t-2);line-height:1.7;
+  flex:1;margin-bottom:1.25rem;
+}
+.prod-footer{
+  display:flex;justify-content:space-between;align-items:flex-end;
+}
+.prod-price{
+  font-family:var(--serif);font-size:1.5rem;font-weight:700;color:var(--t-1);
+}
+.prod-meta{font-size:.6rem;color:var(--t-3);font-weight:400;
+  letter-spacing:.08em;text-transform:uppercase;margin-top:1px;}
+.prod-pill{
+  font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:100px;
+  border:1px solid var(--glass-border);color:var(--t-3);
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION 4 — TRANSPARENCY (new)
+   ═══════════════════════════════════════════════ */
+.transparent-section{
+  padding:var(--pad-y) var(--pad-x);
+  position:relative;
+}
+.transparent-inner{
+  max-width:var(--max);margin:0 auto;
+  display:grid;grid-template-columns:1.1fr 1fr;
+  gap:5rem;align-items:center;
+}
+.ingredient-glass{
+  border-radius:20px;padding:2.5rem;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  box-shadow:var(--glass-shadow-lg);position:relative;overflow:hidden;
+}
+/* heavy top sheen — the "glass" moment */
+.ingredient-glass::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:40%;
+  background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,transparent 100%);
+  border-radius:20px 20px 0 0;pointer-events:none;
+}
+.ingredient-glass::after{
+  content:'';position:absolute;
+  top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;
+  background:rgba(247,201,72,.04);
+  box-shadow:0 0 0 30px rgba(247,201,72,.02);
+  pointer-events:none;
+}
+.ig-title{
+  font-size:.6rem;font-weight:600;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--t-3);margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.ig-title::before{content:'';width:14px;height:1px;background:var(--t-3);}
+.ig-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.9rem 0;border-bottom:1px solid rgba(255,255,255,.05);
+}
+.ig-row:last-child{border-bottom:none;}
+.ig-name{font-size:.88rem;color:var(--t-1);font-weight:400;}
+.ig-amount{font-size:.82rem;color:var(--t-2);}
+/* ★ Von Restorff: one row highlighted */
+.ig-row.highlight .ig-name{color:var(--von);font-weight:600;}
+.ig-row.highlight .ig-amount{color:var(--von);}
+.ig-row.highlight{
+  background:var(--von-pale);margin:0 -2.5rem;padding:.9rem 2.5rem;
+}
+
+.transparent-right .section-h2{margin-bottom:1rem;}
+.transparent-body{
+  font-size:.92rem;font-weight:300;color:var(--t-2);
+  line-height:1.9;margin-bottom:2rem;
+}
+.transparent-body strong{color:var(--t-1);font-weight:600;}
+.whole-truth-nod{
+  font-size:.78rem;color:var(--t-3);
+  padding:.8rem 1rem;border-radius:8px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  line-height:1.65;
+}
+.whole-truth-nod strong{color:var(--t-2);}
+
+/* ═══════════════════════════════════════════════
+   SECTION 5 — PROOF / TESTIMONIALS
+   ═══════════════════════════════════════════════ */
+.proof-section{
+  padding:var(--pad-y) var(--pad-x);
+  position:relative;
+}
+.proof-inner{max-width:var(--max);margin:0 auto;}
+
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  border-radius:16px;overflow:hidden;
+  border:1px solid var(--glass-border);
+  margin-bottom:3rem;
+  box-shadow:var(--glass-shadow-lg);
+}
+.stat-cell{
+  padding:2rem 1.75rem;
+  background:var(--glass);backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;
+  transition:background .3s;
+}
+.stat-cell:hover{background:var(--glass-hover);}
+.stat-cell::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.08),transparent);
+}
+.stat-cell .s-num{
+  font-family:var(--serif);font-size:3.2rem;font-weight:700;
+  color:var(--t-1);line-height:1;display:block;margin-bottom:.5rem;
+}
+/* ★ Von Restorff: ONE stat gets the marker */
+.stat-cell.highlighted .s-num{
+  color:var(--von);
+  text-shadow:0 0 30px rgba(247,201,72,.2);
+}
+.stat-cell .s-desc{font-size:.8rem;color:var(--t-2);line-height:1.7;}
+.stat-cell .s-desc strong{color:var(--t-1);font-weight:600;}
+
+.testi-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;
+}
+.testi{
+  padding:1.5rem;border-radius:14px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:var(--glass-shadow);
+  position:relative;overflow:hidden;
+  transition:background .3s,border-color .3s;
+}
+.testi:hover{background:var(--glass-hover);border-color:var(--glass-border-h);}
+.testi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.1),transparent);
+}
+.testi-q{
+  font-family:var(--serif);font-size:.98rem;font-style:italic;font-weight:300;
+  color:var(--t-1);line-height:1.7;margin-bottom:1.1rem;
+}
+.testi-person{display:flex;align-items:center;gap:.7rem;}
+.testi-av{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.07);border:1px solid var(--glass-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;font-weight:600;color:var(--t-2);flex-shrink:0;
+}
+.testi-name{font-size:.78rem;font-weight:600;color:var(--t-1);}
+.testi-school{font-size:.68rem;color:var(--t-3);}
+
+/* ═══════════════════════════════════════════════
+   CTA SECTION — FULL GLASS INVERSION
+   Deep forest bg + every element is glass.
+   The ONLY solid-color thing is the von button.
+   ═══════════════════════════════════════════════ */
+.cta-section{
+  padding:var(--pad-y) var(--pad-x);
+  position:relative;overflow:hidden;
+}
+/* radial glow behind CTA */
+.cta-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(247,201,72,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-section::after{
+  content:'';position:absolute;
+  top:0;left:50%;transform:translateX(-50%);
+  width:80%;height:1px;
+  background:linear-gradient(to right,transparent,var(--glass-border),transparent);
+}
+
+.cta-inner{
+  max-width:var(--max);margin:0 auto;
+  display:grid;grid-template-columns:1fr auto;
+  gap:5rem;align-items:start;
+}
+.cta-h2{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,5.5vw,4.8rem);
+  font-weight:300;line-height:1.08;
+  color:var(--t-1);margin-bottom:1rem;
+}
+.cta-h2 em{font-style:italic;font-weight:700;color:var(--von);}
+.cta-sub{
+  font-size:.9rem;font-weight:300;color:var(--t-2);
+  line-height:1.85;max-width:420px;margin-bottom:2.5rem;
+}
+
+/* CTA form — glass */
+.cta-form-wrap{display:flex;flex-direction:column;gap:.75rem;}
+.cta-inputs{display:flex;border-radius:10px;overflow:hidden;
+  border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);}
+.cta-email{
+  flex:1;background:rgba(255,255,255,.04);border:none;
+  color:var(--t-1);font-family:var(--sans);font-size:.86rem;
+  padding:.95rem 1.2rem;outline:none;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:background .2s;
+}
+.cta-email::placeholder{color:var(--t-3);}
+.cta-email:focus{background:rgba(255,255,255,.07);}
+.cta-campus{
+  background:rgba(255,255,255,.04);border:none;
+  border-left:1px solid var(--glass-border);border-right:1px solid var(--glass-border);
+  color:var(--t-2);font-family:var(--sans);font-size:.82rem;
+  padding:.95rem .9rem;outline:none;cursor:none;min-width:155px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.cta-campus option{background:#0A1A09;color:#fff;}
+
+/* ★ Von Restorff — THE button. The only solid-color saturated thing in CTA. */
+.cta-submit{
+  background:var(--von);color:#0A0800;border:none;cursor:none;
+  padding:.95rem 1.7rem;
+  font-family:var(--sans);font-size:.82rem;font-weight:700;
+  letter-spacing:.05em;white-space:nowrap;
+  transition:background .2s,box-shadow .2s,transform .15s;
+}
+.cta-submit:hover{
+  background:var(--von-d);
+  box-shadow:0 0 30px var(--von-glow);
+  transform:scale(1.02);
+}
+.cta-micro{font-size:.68rem;color:var(--t-3);letter-spacing:.04em;}
+.cta-success{display:none;flex-direction:column;gap:.5rem;}
+.cta-success-title{font-family:var(--serif);font-size:1.5rem;font-style:italic;color:var(--von);}
+.cta-success-sub{font-size:.84rem;color:var(--t-2);}
+
+/* Counter pod */
+.counter-pod{
+  min-width:220px;padding:1.75rem;border-radius:16px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  box-shadow:var(--glass-shadow-lg);
+  position:relative;overflow:hidden;
+  text-align:center;
+}
+.counter-pod::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.1),transparent);
+}
+.ctr-live{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--leaf);margin-bottom:.75rem;
+}
+.ctr-live-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--leaf);
+  animation:livePulse 2s ease-in-out infinite;
+}
+/* ★ Von Restorff: the only bright number */
+.ctr-num{
+  font-family:var(--serif);font-size:3rem;font-weight:700;
+  color:var(--von);line-height:1;display:block;
+  text-shadow:0 0 20px rgba(247,201,72,.2);margin-bottom:.25rem;
+}
+.ctr-label{font-size:.72rem;color:var(--t-3);}
+.prog-track{
+  height:2px;background:rgba(255,255,255,.06);
+  border-radius:2px;margin:1.1rem 0 .5rem;
+  overflow:hidden;
+}
+.prog-fill{
+  height:100%;background:var(--von);border-radius:2px;
+  transition:width 2s cubic-bezier(.23,1,.32,1);width:0;
+  box-shadow:0 0 8px rgba(247,201,72,.4);
+}
+.prog-labels{
+  display:flex;justify-content:space-between;
+  font-size:.58rem;color:var(--t-3);letter-spacing:.04em;
+}
+
+/* ── FOOTER ─────────────────────────────────────── */
+footer{
+  border-top:1px solid var(--glass-border);
+  padding:1.75rem var(--pad-x);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+  background:rgba(6,13,6,.5);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.footer-logo{
+  font-family:var(--serif);font-size:1.2rem;font-weight:700;
+  letter-spacing:.1em;color:var(--von);
+}
+.footer-note{font-size:.68rem;color:var(--t-3);letter-spacing:.05em;}
+
+/* ── ANIMATIONS ─────────────────────────────────── */
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ═══════════════════════════════════════════════ */
+@media (max-width:1024px){
+  .hero{grid-template-columns:1fr 1fr;gap:2rem;}
+  .problem-grid{grid-template-columns:1fr;gap:3rem;}
+  .diff-grid{grid-template-columns:1fr 1fr;}
+  .diff-card:last-child{display:none;}
+  .products-grid{grid-template-columns:1fr 1fr;}
+  .transparent-inner{grid-template-columns:1fr;gap:3rem;}
+  .testi-grid{grid-template-columns:1fr 1fr;}
+  .testi:last-child{display:none;}
+  .cta-inner{grid-template-columns:1fr;gap:3rem;}
+  .counter-pod{max-width:340px;}
+}
+@media (max-width:768px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero{grid-template-columns:1fr;padding-top:6rem;padding-bottom:4rem;gap:3.5rem;}
+  .hero-right{min-height:380px;}
+  .scene{width:200px;height:280px;}
+  .face-front{width:200px;height:280px;}
+  .face-side{height:280px;transform:rotateY(90deg) translateZ(172px);}
+  .face-top{width:200px;transform:rotateX(90deg) translateZ(-224px);}
+  .pack-name-big{font-size:2rem;}
+  .diff-grid{grid-template-columns:1fr;}
+  .diff-card:last-child{display:block;}
+  .products-header{flex-direction:column;align-items:flex-start;}
+  .products-note{text-align:left;max-width:100%;}
+  .stats-row{grid-template-columns:1fr;border-radius:14px;}
+  .testi-grid{grid-template-columns:1fr;}
+  .testi:last-child{display:flex;}
+  .cta-inner{gap:2.5rem;}
+  .cta-inputs{flex-direction:column;border-radius:10px;}
+  .cta-email,.cta-campus{border-left:none;border-right:none;}
+  .cta-campus{border-top:1px solid var(--glass-border);}
+  .cta-submit{border-top:1px solid rgba(0,0,0,.1);}
+  .counter-pod{max-width:100%;}
+  .wl-form{flex-direction:column;max-width:100%;border-radius:12px;}
+  .wl-input{border-radius:10px 10px 0 0;}
+  .wl-btn{border-radius:0 0 10px 10px;padding:1rem;}
+  footer{justify-content:center;text-align:center;flex-direction:column;gap:.5rem;}
+  .orbit{inset:-50px;}
+}
+@media (max-width:480px){
+  .products-grid{grid-template-columns:1fr;}
+  .hero-h1{font-size:2.7rem;}
+  .cta-h2{font-size:2.1rem;}
+  .stats-row .s-num{font-size:2.5rem;}
+  .diff-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+<!-- ── BACKGROUNDS ──────────────────────────────── -->
+<div class="mesh-bg">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
+</div>
+<div class="grain"></div>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a class="m-link" href="#products" onclick="closeMenu()">Products</a>
+  <a class="m-link" href="#diff" onclick="closeMenu()">The difference</a>
+  <a class="m-link" href="#proof" onclick="closeMenu()">Our campus</a>
+  <button class="m-cta" onclick="closeMenu();goTo('#cta')">Claim your spot →</button>
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="page">
+
+<!-- ── NAV ─────────────────────────────────────── -->
+<nav id="nav">
+  <a href="#" class="logo">
+    TATVA
+    <span class="logo-sub">तत्त्व · Protein Snacks</span>
+  </a>
+  <div class="nav-links">
+    <a href="#products" class="nav-link">Products</a>
+    <a href="#diff" class="nav-link">The difference</a>
+    <a href="#proof" class="nav-link">Our campus</a>
+    <button class="nav-cta" onclick="goTo('#cta')">Claim your spot</button>
+  </div>
+  <button class="hamburger" id="ham" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-kicker">
+      <span style="width:18px;height:1px;background:rgba(255,255,255,.2);display:inline-block;"></span>
+      Launching at Indian campuses · 2025
+    </div>
+
+    <h1 class="hero-h1">
+      Protein has<br>
+      always been<br>
+      <span class="von-mark">Indian.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Dal. Chana. Makhana. The oldest proteins in the world — now in a ₹35 pack you'd actually keep on your desk. No gym required. No compromise.
+    </p>
+
+    <div class="live-bar">
+      <span class="live-dot"></span>
+      <span><strong id="live-n">312</strong> students from Pune on the waitlist · <strong>47 spots</strong> left in first drop</span>
+    </div>
+
+    <div class="wl-form">
+      <input class="wl-input" type="email" id="hero-email" placeholder="your college email">
+      <button class="wl-btn" onclick="heroJoin()">Join waitlist →</button>
+    </div>
+    <p class="hero-micro">No spam. One message only — when TATVA lands at your canteen.</p>
+  </div>
+
+  <!-- 3D FLOATING PACK -->
+  <div class="hero-right">
+    <div class="scene" id="scene">
+      <div class="pack-3d" id="pack">
+        <div class="face face-front">
+          <div class="pack-accent-bar"></div>
+          <div class="pack-tag">तत्त्व · protein snacks</div>
+          <div class="pack-name-big">TATVA</div>
+          <div class="pack-deva">तत्त्व</div>
+          <div class="pack-emoji">🌿</div>
+          <div class="pack-flavor">Pudina Chaat<br>Puffs</div>
+          <div class="pack-badge">8g Protein · Clean Label</div>
+          <div class="pack-wt">40g · ₹35 · No Palm Oil</div>
+        </div>
+        <div class="face face-side">
+          <span class="face-side-txt">Tatva · Protein · India</span>
+        </div>
+        <div class="face face-top">
+          <span class="face-top-txt">TATVA</span>
+        </div>
+      </div>
+      <div class="pack-ground"></div>
+    </div>
+    <!-- orbiting spice emoji -->
+    <div class="orbit">
+      <div class="orb-dot" style="top:8%;left:50%;transform:translate(-50%);">🌿</div>
+      <div class="orb-dot" style="top:50%;right:2%;transform:translateY(-50%);">🍋</div>
+      <div class="orb-dot" style="bottom:8%;left:50%;transform:translate(-50%);">🔥</div>
+      <div class="orb-dot" style="top:50%;left:2%;transform:translateY(-50%);">🌶️</div>
+    </div>
+    <div class="scroll-cue">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 1 — THE PROBLEM ──────────────────── -->
+<section class="problem-section">
+  <div class="problem-grid">
+    <div>
+      <div class="section-kicker rv"><span class="kicker-line"></span>The problem with protein</div>
+      <h2 class="section-h2 rv d1">
+        Everyone made protein<br>feel like <span class="von-mark">punishment.</span>
+      </h2>
+      <p class="problem-body rv d2">
+        Walk into any gym store. Every protein snack is chocolate, peanut butter, or "Birthday Cake" — because that's what <strong>Americans</strong> eat at 3pm.<br><br>
+        India invented protein. Dal. Chana. Paneer. Makhana. We fed entire civilisations on these. Then a foreign supplement brand showed us a shirtless man and a tub of powder — and we forgot everything we already knew.<br><br>
+        TATVA is the memory.
+      </p>
+      <div class="vr-stat-block rv d3">
+        <span class="vr-number">80<span style="font-size:2.5rem;">%</span></span>
+        <span class="vr-label">of Indians are protein deficient. Not by choice — by option. The affordable snacks are junk. The healthy ones are priced for gym-goers. Nobody solved the canteen shelf.</span>
+      </div>
+    </div>
+    <div class="compare-list rv d2">
+      <div class="cmp bad">
+        <span class="cmp-tag bad">Them</span>
+        <div class="cmp-text">Chocolate Fudge Brownie MAX PROTEIN. ₹120. Tastes like chalk wrapped in ambition. <em>Feels like a supplement you owe yourself after a workout you skipped.</em></div>
+      </div>
+      <div class="cmp bad">
+        <span class="cmp-tag bad">Them</span>
+        <div class="cmp-text">BEAST MODE 30G ISOLATE. ₹150. Packaging screams at you in red caps. <em>Makes a second-year B.Com student feel like an imposter at the canteen counter.</em></div>
+      </div>
+      <div class="cmp bad">
+        <span class="cmp-tag bad">Them</span>
+        <div class="cmp-text">Peanut Butter Protein Bar. ₹95. Western flavour on an Indian shelf. <em>Zero Indian students reaching for peanut butter at 3pm. They want something tangy.</em></div>
+      </div>
+      <div class="cmp good">
+        <span class="cmp-tag good">TATVA</span>
+        <div class="cmp-text">Pudina Chaat Puffs. ₹35. Tastes exactly like what your mouth already knows. Happens to carry 8g of clean protein. Nobody mentioned the gym.</div>
+      </div>
+      <div class="cmp good">
+        <span class="cmp-tag good">TATVA</span>
+        <div class="cmp-text">Imli Roasted Chickpeas. ₹40. Ingredient list reads like your kitchen shelf — not a chemistry lab. Your dadi would recognise every single word.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 2 — HOW IT'S DIFFERENT ───────────── -->
+<section class="diff-section" id="diff">
+  <div class="wrap">
+    <div class="section-kicker rv"><span class="kicker-line"></span>The TATVA difference</div>
+    <h2 class="section-h2 rv d1" style="margin-bottom:2.5rem;">Three things <span class="von-mark">no one else</span> does.</h2>
+  </div>
+  <div class="wrap">
+    <div class="diff-grid rv d2">
+      <div class="diff-card">
+        <div class="diff-icon">🌶️</div>
+        <div class="diff-title">Indian Flavours, Not Western</div>
+        <div class="diff-desc">Pudina Chaat. Imli Tamarind. Mirchi Jeera. Peri Peri Chana. Every flavour is something your tongue grew up trusting. No chocolate. No peanut butter. No "Birthday Cake." We go where your taste memory already lives.</div>
+      </div>
+      <div class="diff-card featured">
+        <div class="diff-icon">₹</div>
+        <div class="diff-title">The ₹35 Canteen Price Point</div>
+        <div class="diff-desc">Below ₹50, a student reaches without thinking. Above it, System 2 wakes up and asks "do I need this?" Every TATVA pack lives at ₹35–40 — permanently. Not as a launch offer. As a brand promise. Because the shelf you lose is the habit you lose.</div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">🏫</div>
+        <div class="diff-title">Canteen First, Gym Store Never</div>
+        <div class="diff-desc">Every competitor distributes through gym counters and Blinkit health sections. Zero brands have seriously cracked the college canteen tuck shop. That is the shelf TATVA claims first — because that is where Riya actually buys things at 3pm between lectures.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 3 — PRODUCTS ─────────────────────── -->
+<section class="products-section" id="products">
+  <div class="products-header rv">
+    <div>
+      <div class="section-kicker"><span class="kicker-line"></span>What's in the pack</div>
+      <h2 class="section-h2">Four flavours. All <span class="von-mark">Indian.</span></h2>
+    </div>
+    <p class="products-note">No chocolate. No peanut butter. No vanilla. Just the flavours your mouth grew up on — now with the protein your body always needed.</p>
+  </div>
+  <div class="products-grid">
+    <div class="prod featured rv d1">
+      <span class="prod-emoji">🌿</span>
+      <div class="prod-name">Pudina Chaat Puffs</div>
+      <div class="prod-desc">Pea protein base. Mint-tamarind seasoning. The tang that hits right at 3pm between lectures. Crunchy, airy, impossible to stop at one handful.</div>
+      <div class="prod-footer">
+        <div>
+          <div class="prod-price">₹35</div>
+          <div class="prod-meta">8g protein · 40g · no palm oil</div>
+        </div>
+        <div class="prod-pill">Puffs</div>
+      </div>
+    </div>
+    <div class="prod rv d2">
+      <span class="prod-emoji">🍋</span>
+      <div class="prod-name">Imli Tamarind Roasted Chickpeas</div>
+      <div class="prod-desc">Whole chana. Sun-dried tamarind glaze. Zero maida. Your body has run on chana protein for generations — this is the honest version.</div>
+      <div class="prod-footer">
+        <div>
+          <div class="prod-price">₹40</div>
+          <div class="prod-meta">10g protein · 50g · zero maida</div>
+        </div>
+        <div class="prod-pill">Chickpea</div>
+      </div>
+    </div>
+    <div class="prod rv d3">
+      <span class="prod-emoji">🌶️</span>
+      <div class="prod-name">Mirchi Jeera Makhana</div>
+      <div class="prod-desc">Fox nuts. Roasted, never fried. Jeera-pepper heat. Proves that low calorie and high flavour have always coexisted in India.</div>
+      <div class="prod-footer">
+        <div>
+          <div class="prod-price">₹35</div>
+          <div class="prod-meta">5g protein · 30g · 90 kcal only</div>
+        </div>
+        <div class="prod-pill">Makhana</div>
+      </div>
+    </div>
+    <div class="prod rv d4">
+      <span class="prod-emoji">🔥</span>
+      <div class="prod-name">Peri Peri Chana Dal Crisps</div>
+      <div class="prod-desc">Split chickpea baked crisp. Peri peri masala that earns its heat. Competing with Bingo on the shelf — and winning on everything that matters.</div>
+      <div class="prod-footer">
+        <div>
+          <div class="prod-price">₹35</div>
+          <div class="prod-meta">9g protein · 40g · baked not fried</div>
+        </div>
+        <div class="prod-pill">Crisps</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 4 — TRANSPARENCY ─────────────────── -->
+<section class="transparent-section">
+  <div class="transparent-inner wrap">
+    <div class="ingredient-glass rv">
+      <div class="ig-title">Pudina Chaat Puffs — Full Ingredient List</div>
+      <div class="ig-row highlight">
+        <span class="ig-name">Pea Protein Isolate</span>
+        <span class="ig-amount">8.2g per pack</span>
+      </div>
+      <div class="ig-row">
+        <span class="ig-name">Whole Grain Corn</span>
+        <span class="ig-amount">Base</span>
+      </div>
+      <div class="ig-row">
+        <span class="ig-name">Dried Mint (Pudina)</span>
+        <span class="ig-amount">Flavour</span>
+      </div>
+      <div class="ig-row">
+        <span class="ig-name">Tamarind Powder</span>
+        <span class="ig-amount">Flavour</span>
+      </div>
+      <div class="ig-row">
+        <span class="ig-name">Rock Salt (Sendha Namak)</span>
+        <span class="ig-amount">Seasoning</span>
+      </div>
+      <div class="ig-row">
+        <span class="ig-name">Cold-Pressed Sunflower Oil</span>
+        <span class="ig-amount">Processing</span>
+      </div>
+      <div class="ig-row">
+        <span class="ig-name">Black Pepper</span>
+        <span class="ig-amount">Spice</span>
+      </div>
+      <div class="ig-row" style="margin-top:.5rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08);">
+        <span class="ig-name" style="font-size:.72rem;color:rgba(255,255,255,.28);">Artificial colours — NONE</span>
+        <span class="ig-amount" style="font-size:.72rem;color:rgba(255,255,255,.28);">Preservatives — NONE</span>
+      </div>
+    </div>
+    <div class="transparent-right rv d2">
+      <div class="section-kicker"><span class="kicker-line"></span>Nothing to hide</div>
+      <h2 class="section-h2">The whole list.<br><span class="von-mark">All of it.</span></h2>
+      <p class="transparent-body">
+        Most protein snack brands put the protein number on the front and hide the rest. We don't. <strong>Every ingredient, in plain language, on the front of the pack.</strong><br><br>
+        If we can't say what's in it simply, it shouldn't be in it. Your dadi's pantry had no numbers she couldn't pronounce. Neither does ours.
+      </p>
+      <div class="whole-truth-nod">
+        <strong>Borrowing from The Whole Truth Foods:</strong> "Radical transparency isn't a marketing strategy. It's the only way to build a brand a Gen Z student actually trusts." — TATVA's founding commitment.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 5 — PROOF ─────────────────────────── -->
+<section class="proof-section" id="proof">
+  <div class="proof-inner">
+    <div class="section-kicker rv"><span class="kicker-line"></span>Why this shelf is empty</div>
+    <h2 class="section-h2 rv d1" style="margin-bottom:2.5rem;">The campus shelf has been<br>empty <span class="von-mark">long enough.</span></h2>
+
+    <div class="stats-row rv d2">
+      <div class="stat-cell highlighted">
+        <span class="s-num">₹0</span>
+        <div class="s-desc"><strong>Protein snack brands in Indian college canteens right now.</strong> The shelf exists. The students exist. The hunger exists. Nobody showed up. TATVA is showing up.</div>
+      </div>
+      <div class="stat-cell">
+        <span class="s-num">₹35</span>
+        <div class="s-desc"><strong>The canteen impulse line.</strong> Below ₹50 a student reaches without calculating. Every TATVA pack lives here — permanently. Parle-G taught us you never cross the coin price.</div>
+      </div>
+      <div class="stat-cell">
+        <span class="s-num">80%</span>
+        <div class="s-desc"><strong>Of Indians are below daily protein requirement.</strong> Not by choice — by option. The snacks that are affordable are junk. The healthy ones price out the student entirely.</div>
+      </div>
+    </div>
+
+    <div class="testi-grid rv d3">
+      <div class="testi">
+        <p class="testi-q">"I have HealthifyMe installed. I also have a samosa problem at 3pm. The two have never spoken. TATVA is the first thing that belongs in both worlds."</p>
+        <div class="testi-person">
+          <div class="testi-av">RK</div>
+          <div>
+            <div class="testi-name">Riya K.</div>
+            <div class="testi-school">Second year · Symbiosis Pune · Waitlist #47</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi">
+        <p class="testi-q">"The Pudina Chaat puffs are unreasonably good. My roommate ate half the sample pack without knowing what it was. That's the whole point."</p>
+        <div class="testi-person">
+          <div class="testi-av">AS</div>
+          <div>
+            <div class="testi-name">Arjun S.</div>
+            <div class="testi-school">Third year · BITS Pilani · Early tester</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi">
+        <p class="testi-q">"First protein snack I'd keep on my desk. Three people asked me where to get it during exam week. Nobody asked about the protein."</p>
+        <div class="testi-person">
+          <div class="testi-av">NM</div>
+          <div>
+            <div class="testi-name">Nisha M.</div>
+            <div class="testi-school">First year · IIT Bombay · Waitlist #112</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────────────── -->
+<section class="cta-section" id="cta">
+  <div class="cta-inner">
+    <div class="rv">
+      <div class="section-kicker" style="color:rgba(255,255,255,.3);">
+        <span class="kicker-line"></span>Get early access
+      </div>
+      <h2 class="cta-h2">
+        Your campus.<br>Your canteen.<br><em>Your TATVA.</em>
+      </h2>
+      <p class="cta-sub">
+        We drop campus by campus. When enough of your campus joins the waitlist, yours is next. Every name moves your campus one slot forward.
+      </p>
+      <div id="cta-form-wrap" class="cta-form-wrap">
+        <div class="cta-inputs">
+          <input class="cta-email" type="email" id="cta-email" placeholder="your college email">
+          <select class="cta-campus" id="cta-campus">
+            <option value="">select campus →</option>
+            <option>IIT Bombay</option>
+            <option>IIT Delhi</option>
+            <option>IIT Madras</option>
+            <option>Symbiosis Pune</option>
+            <option>BITS Pilani</option>
+            <option>VIT Vellore</option>
+            <option>NMIMS Mumbai</option>
+            <option>Christ University Bangalore</option>
+            <option>Manipal University</option>
+            <option>Fergusson College Pune</option>
+            <option>Hindu College Delhi</option>
+            <option>Jadavpur University Kolkata</option>
+            <option>Other campus</option>
+          </select>
+          <button class="cta-submit" onclick="ctaJoin()">Claim spot →</button>
+        </div>
+        <p class="cta-micro">No spam. One message only — when TATVA lands at your canteen.</p>
+      </div>
+      <div class="cta-success" id="cta-success">
+        <div class="cta-success-title">You're on the list. 🌿</div>
+        <p class="cta-success-sub">Tell one friend — every referral moves your campus closer to the first drop.</p>
+      </div>
+    </div>
+
+    <div class="counter-pod rv d2">
+      <div class="ctr-live">
+        <span class="ctr-live-dot"></span>
+        Live count
+      </div>
+      <span class="ctr-num" id="ctr">1,247</span>
+      <div class="ctr-label">students on the national waitlist</div>
+      <div class="prog-track">
+        <div class="prog-fill" id="prog"></div>
+      </div>
+      <div class="prog-labels">
+        <span>0</span>
+        <span>First batch at 1,700 →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────── -->
+<footer>
+  <span class="footer-logo">TATVA</span>
+  <span class="footer-note">तत्त्व · Protein has always been Indian · All campuses · 2025</span>
+  <span class="footer-note">Made with chana and conviction.</span>
+</footer>
+
+</div><!-- .page -->
+
+<script>
+// ── CURSOR ────────────────────────────────────────
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+(function tick(){
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+
+// ── NAV STUCK ─────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('stuck',scrollY>50);
+});
+
+// ── HAMBURGER MENU ────────────────────────────────
+function toggleMenu(){
+  const h=document.getElementById('ham');
+  const m=document.getElementById('mobileMenu');
+  h.classList.toggle('open');
+  m.classList.toggle('open');
+  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
+}
+function closeMenu(){
+  document.getElementById('ham').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ── SCROLL REVEAL ─────────────────────────────────
+const rvObs=new IntersectionObserver(en=>{
+  en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});
+},{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>rvObs.observe(el));
+
+// ── 3D PACK MOUSE TILT ────────────────────────────
+const scene=document.getElementById('scene'),pack=document.getElementById('pack');
+let tX=7,tY=-22,cX=7,cY=-22,hovering=false;
+scene.addEventListener('mouseenter',()=>hovering=true);
+scene.addEventListener('mouseleave',()=>{
+  hovering=false;
+  // return to float animation
+  let r=setInterval(()=>{
+    tX+=(7-tX)*.12;tY+=(-22-tY)*.12;
+    if(Math.abs(tX-7)<.1&&Math.abs(tY+22)<.1){
+      clearInterval(r);pack.style.animation='';pack.style.transform='';
+    }
+  },16);
+});
+document.addEventListener('mousemove',e=>{
+  if(!hovering)return;
+  const r=scene.getBoundingClientRect();
+  tX=((e.clientY-r.top-r.height/2)/(r.height/2))*-15;
+  tY=((e.clientX-r.left-r.width/2)/(r.width/2))*24;
+});
+(function packTick(){
+  cX+=(tX-cX)*.08;cY+=(tY-cY)*.08;
+  if(hovering||Math.abs(cX-tX)>.05||Math.abs(cY-tY)>.05){
+    pack.style.animation='none';
+    pack.style.transform=`translateY(0) rotateX(${cX}deg) rotateY(${cY}deg) rotateZ(-1deg)`;
+  }
+  requestAnimationFrame(packTick);
+})();
+
+// ── COUNTER ───────────────────────────────────────
+let total=1247;const TARGET=1700;
+function updateCounters(){
+  document.getElementById('ctr').textContent=total.toLocaleString('en-IN');
+  const p=document.getElementById('prog');
+  if(p)p.style.width=Math.min(97,Math.round(total/TARGET*100))+'%';
+}
+// Animate on enter
+const ctrObs=new IntersectionObserver(en=>{
+  if(!en[0].isIntersecting)return;
+  const el=document.getElementById('ctr');
+  let n=1100,step=(total-n)/70;
+  const t=setInterval(()=>{
+    n+=step;if(n>=total){n=total;clearInterval(t);}
+    el.textContent=Math.round(n).toLocaleString('en-IN');
+  },16);
+  updateCounters();ctrObs.disconnect();
+},{threshold:.4});
+ctrObs.observe(document.getElementById('ctr'));
+
+// Simulate live signups
+setInterval(()=>{
+  if(Math.random()>.55){total+=Math.floor(Math.random()*3)+1;updateCounters();}
+},5500);
+let heroN=312;
+setInterval(()=>{
+  if(Math.random()>.65){heroN++;const e=document.getElementById('live-n');if(e)e.textContent=heroN;}
+},9000);
+
+// ── FORMS ─────────────────────────────────────────
+function goTo(sel){document.querySelector(sel).scrollIntoView({behavior:'smooth'});}
+
+function heroJoin(){
+  const i=document.getElementById('hero-email');
+  if(!i.value.includes('@')){
+    i.style.background='rgba(224,90,58,.12)';
+    setTimeout(()=>i.style.background='',1600);return;
+  }
+  i.value='';i.placeholder='You\'re on the list. 🌿';
+  total++;updateCounters();
+}
+function ctaJoin(){
+  const e=document.getElementById('cta-email');
+  const c=document.getElementById('cta-campus');
+  if(!e.value.includes('@')||!c.value){
+    e.style.background='rgba(224,90,58,.12)';
+    setTimeout(()=>e.style.background='',1600);return;
+  }
+  document.getElementById('cta-form-wrap').style.display='none';
+  const s=document.getElementById('cta-success');s.style.display='flex';
+  total++;updateCounters();
+}
+
+// ── MOBILE CLICK NAV LINKS ────────────────────────
+document.querySelectorAll('.nav-link').forEach(l=>{
+  l.addEventListener('click',e=>{e.preventDefault();goTo(l.getAttribute('href'));});
+});
+</script>
+</body>
+</html>
